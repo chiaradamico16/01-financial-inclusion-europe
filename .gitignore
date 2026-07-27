@@ -13,3 +13,6 @@ Thumbs.db
 
 # Log files
 *.log
+
+# Dati grezzi (da non caricare su GitHub)
+data/raw/
