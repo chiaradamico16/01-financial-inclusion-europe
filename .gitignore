@@ -16,3 +16,4 @@ Thumbs.db
 
 # Dati grezzi (da non caricare su GitHub)
 data/raw/
+.Rproj.user
