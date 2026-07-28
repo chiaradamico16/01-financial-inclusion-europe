@@ -1,40 +1,32 @@
 library(tidyverse)
+
 file_path <- "data/raw/micro_world_139countries.csv"
 
 micro_world_139countries <- read.csv(
-  file_path, 
-  fileEncoding = "UTF-8"
+  file_path,
+  fileEncoding = "Windows-1252"
+) %>%
+  as_tibble()
+
+#verify that the entire dataset was imported
+stopifnot(nrow(micro_world_139countries) == 143887)
+stopifnot(ncol(micro_world_139countries) == 128)
+stopifnot(n_distinct(micro_world_139countries$economy) == 139)
+
+cat("Dataset successfully imported.\n")
+cat("Observations:", nrow(micro_world_139countries), "\n")
+cat("Variables:", ncol(micro_world_139countries), "\n")
+cat(
+  "Countries:",
+  n_distinct(micro_world_139countries$economy),
+  "\n"
 )
 
-micro_world_139countries <- as_tibble(micro_world_139countries)
-
-View(micro_world_139countries)
-
-dim(micro_world_139countries)
-
-nrow(micro_world_139countries)
-ncol(micro_world_139countries)
-
+#check the structure of the dataset 
 glimpse(micro_world_139countries)
 
-names(micro_world_139countries)[grep("^fin", names(micro_world_139countries))]
-summary(micro_world_139countries$fin22a)
-table(is.na(micro_world_139countries$fin22a))
 
-
-summary(micro_world_139countries$female)
-table(micro_world_139countries$female)
-sum(is.na(micro_world_139countries$female))
-
-summary(micro_world_139countries$educ)
-table(micro_world_139countries$educ)
-sum(is.na(micro_world_139countries$educ))
-
-summary(micro_world_139countries$age)
-table(micro_world_139countries$age)
-sum(is.na(micro_world_139countries$age))
-
-
+#check variables relevant for the project and verify they exist
 vars_project <- c(
   "economy",
   "economycode",
@@ -56,34 +48,77 @@ vars_project <- c(
   "internetaccess"
 )
 
+missing_variables <- setdiff(
+  vars_project,
+  names(micro_world_139countries)
+)
+
+stopifnot(length(missing_variables) == 0)
+
+
+#check the quality of the variables, checking types and missing values
 audit_project <- tibble(
-  Variable = vars_project,
-  Type = sapply(micro_world_139countries[vars_project], class),
-  Missing = sapply(micro_world_139countries[vars_project], function(x) sum(is.na(x))),
-  Missing_pct = round(
-    sapply(micro_world_139countries[vars_project], function(x) mean(is.na(x))) * 100,
-    2
+  variable = vars_project,
+  type = map_chr(
+    micro_world_139countries[vars_project],
+    ~ class(.x)[1]
+  ),
+  missing = map_int(
+    micro_world_139countries[vars_project],
+    ~ sum(is.na(.x))
+  ),
+  missing_pct = map_dbl(
+    micro_world_139countries[vars_project],
+    ~ round(mean(is.na(.x)) * 100, 2)
   )
 )
 
-view(audit_project)
+print(audit_project, n = Inf)
 
-vars <- c(
+#check some of the variables more in detail
+
+#categorical
+categorical_variables <- c(
   "female",
-  "age",
   "educ",
   "inc_q",
   "emp_in",
   "account",
   "account_fin",
+  "account_mob",
   "borrowed",
   "saved",
   "anydigpayment",
   "internetaccess"
 )
 
-for(v in vars){
-  cat("\n============================\n")
-  cat(v, "\n")
-  print(table(micro_world_139countries[[v]], useNA = "ifany"))
+for (variable in categorical_variables) {
+  
+  cat("\n")
+  cat("============================================================\n")
+  cat("Variable:", variable, "\n")
+  cat("============================================================\n")
+  
+  print(
+    table(
+      micro_world_139countries[[variable]],
+      useNA = "ifany"
+    )
+  )
 }
+
+#numerical
+summary(micro_world_139countries$age)
+
+
+#analyse the geographical coverage of the dataset
+country_coverage <- micro_world_139countries %>%
+  distinct(economy, economycode, regionwb) %>%
+  arrange(economy)
+
+cat("\nNumber of countries by World Bank regional category:\n")
+
+country_coverage %>%
+  count(regionwb, name = "countries") %>%
+  arrange(desc(countries)) %>%
+  print(n = Inf)
