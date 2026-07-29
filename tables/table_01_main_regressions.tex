@@ -1,0 +1,44 @@
+
+\begin{table}[htbp]
+   \caption{\label{tab:main_regressions} Account ownership: main regression results}
+   \centering
+   \begin{tabular}{lcc}
+      \tabularnewline \midrule \midrule
+      Dependent Variable: & \multicolumn{2}{c}{account}\\
+      Model:              & (1)                            & (2)\\  
+      \midrule
+      \emph{Variables}\\
+      female              & -0.020$^{*}$                   & -0.009\\   
+                          & (0.009)                        & (0.007)\\   
+      age\_centered       & 0.0001                         & 0.0004\\   
+                          & (0.0003)                       & (0.0004)\\   
+      age\_centered\_sq   & $-8.14\times 10^{-5}$$^{***}$  & $-3.77\times 10^{-5}$$^{**}$\\    
+                          & ($1.55\times 10^{-5}$)         & ($1.2\times 10^{-5}$)\\    
+      educ $=$ 2          &                                & 0.079$^{***}$\\   
+                          &                                & (0.016)\\   
+      educ $=$ 3          &                                & 0.096$^{***}$\\   
+                          &                                & (0.018)\\   
+      inc\_q $=$ 2        &                                & 0.029$^{***}$\\   
+                          &                                & (0.008)\\   
+      inc\_q $=$ 3        &                                & 0.047$^{***}$\\   
+                          &                                & (0.009)\\   
+      inc\_q $=$ 4        &                                & 0.054$^{***}$\\   
+                          &                                & (0.011)\\   
+      inc\_q $=$ 5        &                                & 0.064$^{***}$\\   
+                          &                                & (0.013)\\   
+      emp\_in $=$ 1       &                                & 0.051$^{***}$\\   
+                          &                                & (0.013)\\   
+      \midrule
+      \emph{Fixed-effects}\\
+      economy             & Yes                            & Yes\\  
+      \midrule
+      \emph{Fit statistics}\\
+      Observations        & 38,302                         & 38,302\\  
+      R$^2$               & 0.20683                        & 0.23820\\  
+      \midrule \midrule
+      \multicolumn{3}{l}{\emph{Clustered (economy) standard-errors in parentheses}}\\
+      \multicolumn{3}{l}{\emph{Signif. Codes: ***: 0.001, **: 0.01, *: 0.05, .: 0.1}}\\
+   \end{tabular}
+\end{table}
+
+

@@ -575,4 +575,51 @@ ggsave(
 )
 
 
+# account ownership by country
+country_account <- europe %>%
+  filter(
+    !is.na(account),
+    !is.na(wgt)
+  ) %>%
+  group_by(economy) %>%
+  summarise(
+    account_share = weighted.mean(
+      account,
+      wgt
+    ),
+    .groups = "drop"
+  ) %>%
+  arrange(account_share)
 
+figure_country_account <- ggplot(
+  country_account,
+  aes(
+    x = account_share,
+    y = reorder(economy, account_share)
+  )
+) +
+  geom_col(
+    width = 0.7,
+    fill = "grey35"
+  ) +
+  scale_x_continuous(
+    labels = percent_format(accuracy = 1),
+    limits = c(0, 1)
+  ) +
+  labs(
+    title = "Account ownership across European countries",
+    x = "Weighted share with an account",
+    y = NULL,
+    caption = "Note: Survey weights are applied within each country."
+  ) +
+  theme_paper()
+print(figure_country_account)
+
+ggsave(
+  filename = "figures/figure_07_account_by_country.png",
+  plot = figure_country_account,
+  width = 8,
+  height = 9,
+  dpi = 300,
+  bg = "white"
+)
